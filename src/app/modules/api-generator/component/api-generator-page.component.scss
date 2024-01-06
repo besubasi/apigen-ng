@@ -1,0 +1,23 @@
+.ui-sticky-buttonbar-wrapper {
+    position: fixed;
+    left: 0px;
+    bottom: 0;
+    width: 100%;
+    background-color: white;
+    border-top: 1px solid;
+    padding: 10px 20px;
+    right: 0px;
+    z-index: 1;
+
+    .buttonbar-content {
+        display: flex;
+        justify-content: flex-end;
+
+        .center-button {
+            justify-content: center;
+            display: flex;
+            width: 100%
+        }
+    }
+
+}
