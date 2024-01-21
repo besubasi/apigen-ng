@@ -1,8 +1,8 @@
-export class PropertyModel{
-
-    type:string;
-    name:string;
-    dbName:string;
-    notNull:boolean
-    useSearchParameter:boolean;
+export class PropertyModel {
+    uuid: string;
+    type: string;
+    name: string;
+    dbName: string;
+    notNull: boolean = false
+    useSearchParameter: boolean = false;
 }

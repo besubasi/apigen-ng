@@ -8,7 +8,7 @@ import {ApiGeneratorModel} from "../model/api-generator-model";
 })
 export class ApiGeneratorService {
 
-    private baseUrl = 'http://localhost:8080';
+    private baseUrl = 'http://localhost:8090';
 
 
     constructor(private http: HttpClient) {
