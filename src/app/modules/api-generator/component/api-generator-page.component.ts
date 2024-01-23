@@ -1,24 +1,25 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CurrencyPipe, NgIf, NgStyle} from "@angular/common";
 import {ButtonModule} from "primeng/button";
 import {MenuModule} from "primeng/menu";
-import {SharedModule} from "primeng/api";
+import {MessageService, SharedModule} from "primeng/api";
 import {TableModule} from "primeng/table";
 import {ChartModule} from "primeng/chart";
 import {InputTextModule} from "primeng/inputtext";
 import {FormBuilder, ReactiveFormsModule, UntypedFormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-
-import {ApiGeneratorService} from "../service/api-generator-service";
-import {ApiGeneratorModel} from "../model/api-generator-model";
-import {PropertyModel} from "../model/property-model";
+import {v4 as uuid} from 'uuid';
+import {DividerModule} from "primeng/divider";
 import {ToolbarModule} from "primeng/toolbar";
 import {CardModule} from "primeng/card";
 import {CheckboxModule} from "primeng/checkbox";
 import {RippleModule} from "primeng/ripple";
-import {FormMode} from "../../../common/form-mode";
-import {v4 as uuid} from 'uuid';
 
+
+import {ApiGeneratorService} from "../service/api-generator-service";
+import {ApiGeneratorModel} from "../model/api-generator-model";
+import {PropertyModel} from "../model/property-model";
+import {FormMode} from "../../../common/form-mode";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'app-api-generator-page',
@@ -38,28 +39,36 @@ import {v4 as uuid} from 'uuid';
         CardModule,
         CheckboxModule,
         RippleModule,
+        DividerModule,
     ],
     styleUrls: ['./api-generator-page.component.scss'],
     templateUrl: './api-generator-page.component.html'
 })
-export class ApiGeneratorPageComponent implements OnInit {
+export class ApiGeneratorPageComponent implements OnInit, OnDestroy {
 
     form: UntypedFormGroup;
     propertyForm: UntypedFormGroup;
-    propertyList: PropertyModel[] = [];
+    propertyList: PropertyModel[];
     formMode: string;
     selectedModel: PropertyModel;
+    subscriptions: Subscription[];
 
     constructor(
         private fb: FormBuilder,
         private apiGeneratorService: ApiGeneratorService,
-        private router: Router,
+        private messageService: MessageService
     ) {
     }
 
     ngOnInit() {
         this.formMode = FormMode.NONE;
+        this.subscriptions = [];
+        this.propertyList = [];
         this.buildForm();
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions?.forEach(x => x.unsubscribe());
     }
 
     buildForm() {
@@ -67,24 +76,24 @@ export class ApiGeneratorPageComponent implements OnInit {
             apiPackage: [null, [Validators.required]],
             apiName: [null, [Validators.required]],
             tableName: [null, [Validators.required]],
+            propertyList: [[], [Validators.required]],
         });
     }
 
     buildPropertyForm() {
         this.propertyForm = this.fb.group({
-            uuid: [null, [Validators.nullValidator]],
+            uuid: [uuid(), [Validators.nullValidator]],
             type: [null, [Validators.required]],
             name: [null, [Validators.required]],
             dbName: [null, [Validators.required]],
-            notNull: [null, [Validators.required]],
-            useSearchParameter: [null, [Validators.required]],
+            notNull: [false, [Validators.required]],
+            useSearchParameter: [false, [Validators.required]],
         });
     }
 
     onAdd() {
         this.formMode = FormMode.ADD;
         this.buildPropertyForm();
-        this.propertyForm.patchValue({uuid: uuid()});
     }
 
     onCopy() {
@@ -102,6 +111,7 @@ export class ApiGeneratorPageComponent implements OnInit {
 
     onDelete() {
         this.propertyList = this.propertyList.filter(x => x.uuid !== this.selectedModel.uuid);
+        this.form.patchValue({propertyList: this.propertyList})
     }
 
     onCancel() {
@@ -117,15 +127,12 @@ export class ApiGeneratorPageComponent implements OnInit {
         let apiModel: ApiGeneratorModel = this.form.value;
         apiModel.propertyList = this.propertyList;
 
-        const model: ApiGeneratorModel = this.form.value;
-        this.apiGeneratorService.generate(apiModel).subscribe(
+        let subscription = this.apiGeneratorService.generate(apiModel).subscribe(
             response => {
-                //this.messageService.add({severity: 'success', summary: 'Success', detail: response + ""});
-            },
-            error => {
-                //this.messageService.add({severity: 'error', summary: 'Error', detail: 'Something went wrong'});
+                this.messageService.add({severity: 'success', summary: 'Success', detail: "Api Oluşturuldu"});
             }
-        )
+        );
+        this.subscriptions.push(subscription);
     }
 
     onBack() {
@@ -142,6 +149,7 @@ export class ApiGeneratorPageComponent implements OnInit {
         }
         this.selectedModel = null;
         this.formMode = FormMode.NONE;
+        this.form.patchValue({propertyList: this.propertyList})
     }
 
     get FormMode() {

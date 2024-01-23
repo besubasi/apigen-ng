@@ -1,18 +1,19 @@
 <div class="grid">
     <div class="col-4">
         <div class="card p-fluid">
-            <h5>Api Info</h5>
+            <h5>Api Bilgileri</h5>
+            <p-divider></p-divider>
             <form [formGroup]="form">
                 <div class="field">
-                    <label htmlFor="apiPackage">Api Package</label>
+                    <label htmlFor="apiPackage">Api Paketi</label>
                     <input pInputText id="apiPackage" type="text" formControlName="apiPackage" placeholder="tripsales"/>
                 </div>
                 <div class="field">
-                    <label htmlFor="apiName">Api Name</label>
+                    <label htmlFor="apiName">Api Adı</label>
                     <input pInputText id="apiName" type="text" formControlName="apiName" placeholder="TripSales"/>
                 </div>
                 <div class="field">
-                    <label htmlFor="tableName">Table Name</label>
+                    <label htmlFor="tableName">Tablo Adı</label>
                     <input pInputText id="tableName" type="text" formControlName="tableName" placeholder="TRIP_SALES"/>
                 </div>
 
@@ -22,7 +23,8 @@
 
     <div class="col-8">
         <div class="card" *ngIf="formMode === FormMode.NONE">
-            <h5>Property List</h5>
+            <h5>Alan Listesi</h5>
+            <p-divider></p-divider>
 
             <p-toolbar styleClass="mb-1">
                 <ng-template pTemplate="left">
@@ -37,13 +39,12 @@
                     <button pButton pRipple icon="pi pi-update" class="p-button-raised p-button-help mr-2"
                             [label]="'Güncelle'" [disabled]="!selectedModel"
                             (click)="onUpdate()"></button>
-                    <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger mr-2"
+                    <button pButton pRipple label="Sil" icon="pi pi-trash" class="p-button-danger mr-2"
                             (click)="onDelete()"
                             [disabled]="!selectedModel"></button>
 
                 </ng-template>
             </p-toolbar>
-
 
             <p-table dataKey="uuid"
                      styleClass="p-datatable-striped"
@@ -53,11 +54,11 @@
             >
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Type</th>
-                        <th>Name</th>
-                        <th>DB Name</th>
-                        <th>Not Null</th>
-                        <th>Use Search</th>
+                        <th>Değişken Tipi</th>
+                        <th>Değişken Adı</th>
+                        <th>DB Kolon Adı</th>
+                        <th>Zorunlu mu?</th>
+                        <th>Aranabilir mi?</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product>
@@ -74,34 +75,36 @@
 
         <div class="card"
              *ngIf="formMode !== FormMode.NONE">
-            <h5>Property Info</h5>
+            <h5>Alan Bilgileri</h5>
+            <p-divider></p-divider>
+
             <form [formGroup]="propertyForm">
                 <div class="field grid">
-                    <label htmlFor="type" class="col-4">Type</label>
+                    <label htmlFor="type" class="col-4">Değişken Tipi</label>
                     <div class="col-8">
                         <input pInputText id="type" type="text" formControlName="type" placeholder="Long"/>
                     </div>
                 </div>
                 <div class="field grid">
-                    <label htmlFor="name" class="col-4">Java Property Name</label>
+                    <label htmlFor="name" class="col-4">Değişken Adı</label>
                     <div class="col-8">
                         <input pInputText id="name" type="text" formControlName="name" placeholder="tripId"/>
                     </div>
                 </div>
                 <div class="field grid">
-                    <label htmlFor="dbName" class="col-4">DB Column Name</label>
+                    <label htmlFor="dbName" class="col-4">DB Kolon Adı</label>
                     <div class="col-8">
                         <input pInputText id="dbName" type="text" formControlName="dbName" placeholder="TRIP_ID"/>
                     </div>
                 </div>
                 <div class="field grid">
-                    <label htmlFor="notNull" class="col-4">Not Null</label>
+                    <label htmlFor="notNull" class="col-4">Zorunlu mu?</label>
                     <div class="col-8">
                         <p-checkbox formControlName="notNull" id="notNull" binary="true"></p-checkbox>
                     </div>
                 </div>
                 <div class="field grid">
-                    <label htmlFor="useSearchParameter" class="col-4">Use Search Parameter</label>
+                    <label htmlFor="useSearchParameter" class="col-4">Aranabilir mi?</label>
                     <div class="col-8">
                         <p-checkbox formControlName="useSearchParameter" id="useSearchParameter"
                                     binary="true"></p-checkbox>
@@ -130,7 +133,7 @@
 
         <button pButton pRipple type="button" label="Api Oluştur" class="p-button-raised p-button-success"
                 icon="pi pi-check"
-                [disabled]="formMode != FormMode.NONE"
+                [disabled]="formMode != FormMode.NONE || form.invalid"
                 (click)="onGenerateApi()"></button>
     </div>
 </div>

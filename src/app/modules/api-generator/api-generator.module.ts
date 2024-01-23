@@ -1,7 +1,5 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ApiGeneratorPageComponent} from "./component/api-generator-page.component";
-import {ApiGeneratorRoutingModule} from "./api-generator-routing.module";
 import {FormsModule} from "@angular/forms";
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {CalendarModule} from "primeng/calendar";
@@ -14,7 +12,11 @@ import {MultiSelectModule} from "primeng/multiselect";
 import {InputTextareaModule} from "primeng/inputtextarea";
 import {InputTextModule} from "primeng/inputtext";
 import {StyleClassModule} from "primeng/styleclass";
+import {ToastModule} from 'primeng/toast';
+import {MessageModule} from "primeng/message";
 
+import {ApiGeneratorPageComponent} from "./component/api-generator-page.component";
+import {ApiGeneratorRoutingModule} from "./api-generator-routing.module";
 
 @NgModule({
     declarations: [],
@@ -33,7 +35,9 @@ import {StyleClassModule} from "primeng/styleclass";
         MultiSelectModule,
         InputTextareaModule,
         InputTextModule,
-        StyleClassModule
+        StyleClassModule,
+        ToastModule,
+        MessageModule
     ]
 })
 export class ApiGeneratorModule {
